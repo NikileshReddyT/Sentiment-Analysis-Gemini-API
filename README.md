@@ -23,7 +23,7 @@ A modern web application that uses Google's Generative AI (Gemini) to analyze th
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/NikileshReddyT/Sentiment-Analysis-Gemini-API.git
 cd sentiment-analyzer
 ```
 
