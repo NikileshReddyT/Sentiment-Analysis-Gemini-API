@@ -1,31 +1,132 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  /* Light theme variables */
+  --background-light: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
+  --text-primary-light: #2d3748;
+  --text-secondary-light: #4a5568;
+  --heading-color-light: #2d3748;
+  --card-bg-light: rgba(255, 255, 255, 0.9);
+  --glass-bg-light: rgba(255, 255, 255, 0.1);
+  --glass-border-light: rgba(255, 255, 255, 0.2);
+  --shadow-color-light: rgba(0, 0, 0, 0.1);
+  --border-color-light: #e2e8f0;
+  --button-bg-light: #4299e1;
+  --button-hover-light: #3182ce;
+  --input-bg-light: #ffffff;
+  --input-border-light: #e2e8f0;
+  --toggle-bg-light: #e2e8f0;
+  --toggle-border-light: #cbd5e0;
+  --toggle-icon-light: #4299e1;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Dark theme variables */
+  --background-dark: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+  --text-primary-dark: #f7fafc;
+  --text-secondary-dark: #e2e8f0;
+  --heading-color-dark: #f7fafc;
+  --card-bg-dark: rgba(26, 32, 44, 0.9);
+  --glass-bg-dark: rgba(255, 255, 255, 0.05);
+  --glass-border-dark: rgba(255, 255, 255, 0.1);
+  --shadow-color-dark: rgba(0, 0, 0, 0.3);
+  --border-color-dark: #4a5568;
+  --button-bg-dark: #4299e1;
+  --button-hover-dark: #3182ce;
+  --input-bg-dark: #2d3748;
+  --input-border-dark: #4a5568;
+  --toggle-bg-dark: #2d3748;
+  --toggle-border-dark: #4a5568;
+  --toggle-icon-dark: #f7fafc;
+}
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Light theme default */
+:root {
+  --background: var(--background-light);
+  --text-primary: var(--text-primary-light);
+  --text-secondary: var(--text-secondary-light);
+  --heading-color: var(--heading-color-light);
+  --card-bg: var(--card-bg-light);
+  --glass-bg: var(--glass-bg-light);
+  --glass-border: var(--glass-border-light);
+  --shadow-color: var(--shadow-color-light);
+  --border-color: var(--border-color-light);
+  --button-bg: var(--button-bg-light);
+  --button-hover: var(--button-hover-light);
+  --input-bg: var(--input-bg-light);
+  --input-border: var(--input-border-light);
+  --toggle-bg: var(--toggle-bg-light);
+  --toggle-border: var(--toggle-border-light);
+  --toggle-icon: var(--toggle-icon-light);
+}
+
+/* Dark theme class */
+[data-theme='dark'] {
+  --background: var(--background-dark);
+  --text-primary: var(--text-primary-dark);
+  --text-secondary: var(--text-secondary-dark);
+  --heading-color: var(--heading-color-dark);
+  --card-bg: var(--card-bg-dark);
+  --glass-bg: var(--glass-bg-dark);
+  --glass-border: var(--glass-border-dark);
+  --shadow-color: var(--shadow-color-dark);
+  --border-color: var(--border-color-dark);
+  --button-bg: var(--button-bg-dark);
+  --button-hover: var(--button-hover-dark);
+  --input-bg: var(--input-bg-dark);
+  --input-border: var(--input-border-dark);
+  --toggle-bg: var(--toggle-bg-dark);
+  --toggle-border: var(--toggle-border-dark);
+  --toggle-icon: var(--toggle-icon-dark);
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 body {
-  margin: 0;
-  min-width: 320px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--background);
+  color: var(--text-primary);
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-input, textarea, select {
+#root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+body[data-theme="dark"] {
+  background: #000000;
+  background-image: 
+    radial-gradient(at 40% 20%, rgba(16, 23, 41, 0.8) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, rgba(30, 41, 59, 0.6) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, rgba(16, 23, 41, 0.7) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, rgba(30, 41, 59, 0.4) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(16, 23, 41, 0.8) 0px, transparent 50%),
+    radial-gradient(at 80% 100%, rgba(30, 41, 59, 0.6) 0px, transparent 50%);
+  color: var(--text-primary);
+}
+
+body[data-theme="light"] {
+  background: var(--bg-primary);
+  background-image: 
+    radial-gradient(at 40% 20%, rgba(248, 249, 250, 0.8) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, rgba(236, 240, 241, 0.6) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, rgba(248, 249, 250, 0.7) 0px, transparent 50%),
+    radial-gradient(at 80% 50%, rgba(236, 240, 241, 0.4) 0px, transparent 50%),
+    radial-gradient(at 0% 100%, rgba(248, 249, 250, 0.8) 0px, transparent 50%),
+    radial-gradient(at 80% 100%, rgba(236, 240, 241, 0.6) 0px, transparent 50%);
+  color: var(--text-primary);
+}
+
+input, textarea, select, button {
   font-family: inherit;
 }
 

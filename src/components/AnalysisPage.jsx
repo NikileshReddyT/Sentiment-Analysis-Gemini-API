@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import styles from './AnalysisPage.module.css';
 import { useSentimentAnalysis } from '../hooks/useSentimentAnalysis';
 import { useModels } from '../hooks/useModels';
+import { useTheme } from '../hooks/useTheme.jsx';
 
 function AnalysisPage({ apiKey, onLogout }) {
   const [comment, setComment] = useState('');
   const navigate = useNavigate();
+  const { isDarkMode, toggleTheme } = useTheme();
   
   const { models, selectedModel, setSelectedModel } = useModels();
   const { result, loading, error, analyzeSentiment } = useSentimentAnalysis(apiKey);
@@ -14,7 +16,6 @@ function AnalysisPage({ apiKey, onLogout }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!comment.trim()) return;
-    
     await analyzeSentiment(comment, selectedModel);
   };
 
@@ -36,10 +37,22 @@ function AnalysisPage({ apiKey, onLogout }) {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1>Sentiment Analysis</h1>
-        <button onClick={onLogout} className={styles.logoutButton}>
-          Logout
-        </button>
+        <h1 className={styles.title}>Sentiment Analysis</h1>
+        <div className={styles.controls}>
+          <button 
+            className={styles.themeToggle} 
+            onClick={toggleTheme}
+            title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            <span className={styles.themeToggleIcon}>
+              {isDarkMode ? '🌞' : '🌙'}
+            </span>
+            {isDarkMode ? 'Light' : 'Dark'}
+          </button>
+          <button onClick={onLogout} className={styles.logoutButton}>
+            Logout
+          </button>
+        </div>
       </header>
 
       <div className={styles.card}>
@@ -70,7 +83,13 @@ function AnalysisPage({ apiKey, onLogout }) {
 
         {error && <div className={styles.error}>{error}</div>}
 
-        {result && (
+        {loading && (
+          <div className={styles.loading}>
+            Analyzing your text... Please wait
+          </div>
+        )}
+
+        {!loading && result && (
           <div className={`${styles.result} ${getStatusClass()}`}>
             <div className={styles.statusBanner}>
               {result.sentiment === 'negative' && result.analysis.specifics.intensity === 'high' && 'Blocked'}
@@ -81,50 +100,72 @@ function AnalysisPage({ apiKey, onLogout }) {
               ) && 'Neutral'}
             </div>
             
-            <div className={styles.sentiment}>
-              <strong>Sentiment:</strong> {result.sentiment}
-              <span className={styles.confidence}>
-                (Confidence: {(result.confidence * 100).toFixed(1)}%)
-              </span>
-            </div>
-            
-            <div className={styles.analysis}>
-              <strong>Analysis:</strong> {result.analysis.overall}
-            </div>
-            
-            <div className={styles.terms}>
-              {result.analysis.specifics.positive_terms.length > 0 && (
-                <div className={styles.termGroup}>
-                  <strong>Positive Terms:</strong>
-                  <div className={styles.termList}>
-                    {result.analysis.specifics.positive_terms.map((term, index) => (
-                      <span key={index} className={`${styles.term} ${styles.positive}`}>
-                        {term}
-                      </span>
-                    ))}
-                  </div>
+            <div className={styles.resultContent}>
+              <div className={styles.mainMetrics}>
+                <div className={styles.metricItem}>
+                  <span className={styles.metricLabel}>Sentiment</span>
+                  <span className={`${styles.metricValue} ${styles[result.sentiment]}`}>
+                    {result.sentiment.charAt(0).toUpperCase() + result.sentiment.slice(1)}
+                  </span>
+                  <span className={styles.confidence}>
+                    {(result.confidence * 100).toFixed(1)}% confidence
+                  </span>
                 </div>
-              )}
+
+                <div className={styles.metricItem}>
+                  <span className={styles.metricLabel}>Intensity</span>
+                  <span className={`${styles.metricValue} ${styles[result.analysis.specifics.intensity]}`}>
+                    {result.analysis.specifics.intensity.charAt(0).toUpperCase() + 
+                     result.analysis.specifics.intensity.slice(1)}
+                  </span>
+                </div>
+              </div>
+
+              <div className={styles.analysis}>
+                <h3 className={styles.sectionTitle}>Analysis</h3>
+                <p className={styles.analysisText}>{result.analysis.overall}</p>
+              </div>
               
-              {result.analysis.specifics.negative_terms.length > 0 && (
-                <div className={styles.termGroup}>
-                  <strong>Negative Terms:</strong>
-                  <div className={styles.termList}>
-                    {result.analysis.specifics.negative_terms.map((term, index) => (
-                      <span key={index} className={`${styles.term} ${styles.negative}`}>
-                        {term}
-                      </span>
-                    ))}
+              <div className={styles.terms}>
+                {result.analysis.specifics.positive_terms.length > 0 && (
+                  <div className={styles.termGroup}>
+                    <h3 className={styles.sectionTitle}>Key Positive Elements</h3>
+                    <div className={styles.termList}>
+                      {result.analysis.specifics.positive_terms.map((term, index) => (
+                        <span key={index} className={`${styles.term} ${styles.positive}`}>
+                          {term}
+                        </span>
+                      ))}
+                    </div>
                   </div>
+                )}
+                
+                {result.analysis.specifics.negative_terms.length > 0 && (
+                  <div className={styles.termGroup}>
+                    <h3 className={styles.sectionTitle}>Key Negative Elements</h3>
+                    <div className={styles.termList}>
+                      {result.analysis.specifics.negative_terms.map((term, index) => (
+                        <span key={index} className={`${styles.term} ${styles.negative}`}>
+                          {term}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {result.analysis.specifics.recommendations && result.analysis.specifics.recommendations.length > 0 && (
+                <div className={styles.suggestions}>
+                  <h3 className={styles.sectionTitle}>Suggestions</h3>
+                  <ul className={styles.suggestionList}>
+                    {result.analysis.specifics.recommendations.map((suggestion, index) => (
+                      <li key={index} className={styles.suggestionItem}>
+                        {suggestion}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
-            </div>
-            
-            <div className={styles.intensity}>
-              <strong>Intensity:</strong>
-              <span className={`${styles.intensityValue} ${styles[result.analysis.specifics.intensity.toLowerCase()]}`}>
-                {result.analysis.specifics.intensity}
-              </span>
             </div>
           </div>
         )}
